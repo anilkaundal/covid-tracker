@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Coronavirus COVID-19 Tracker</title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="{{url_for('static',filename='vendors/mdi/css/materialdesignicons.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='vendors/mdi/css/materialdesignicons.min.css.map')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='vendors/css/vendor.bundle.base.css')}}">
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <link rel="stylesheet" href="{{url_for('static',filename='vendors/flag-icon-css/css/flag-icon.min.css')}}">
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <!-- endinject -->
+    <!-- Layout styles -->
+    <link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}">
+    <!-- End layout styles -->
+    <link rel="shortcut icon" href="{{url_for('static',filename='images/favicon.png')}}" />
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js'></script>
+</head>
+
+<body>
+    <div class="container-scroller">
+        <!-- partial:partials/_sidebar.html -->
+        <nav class="sidebar sidebar-offcanvas" id="sidebar">
+            <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
+                <a class="sidebar-brand brand-logo" href="/"><img src="{{url_for('static',filename='images/logo.svg')}}"
+                        alt="logo" /></a>
+                <a class="sidebar-brand brand-logo-mini" href="/"><img
+                        src="{{url_for('static',filename='images/tracker.svg')}}" alt="logo" /></a>
+            </div>
+            <ul class="nav">
+                <li class="nav-item nav-category">
+                    <span class="nav-link">Navigation</span>
+                </li>
+                <li class="nav-item menu-items">
+                    <a class="nav-link" href="/">
+                        <span class="menu-icon">
+                            <i class="mdi mdi-speedometer"></i>
+                        </span>
+                        <span class="menu-title">Home</span>
+                    </a>
+                </li>
+                <li class="nav-item menu-items">
+                    <a class="nav-link" href="{{ url_for('about') }}">
+                        <span class="menu-icon">
+                            <i class="mdi mdi-laptop"></i>
+                        </span>
+                        <span class="menu-title">About</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- partial -->
+        <div class="container-fluid page-body-wrapper">
+
+            <!-- partial:partials/_navbar.html -->
+            <nav class="navbar p-0 fixed-top d-flex flex-row">
+                <div class="navbar-brand-wrapper d-flex d-lg-none align-items-center justify-content-center">
+                    <a class="navbar-brand brand-logo-mini" href="/"><img
+                            src="{{url_for('static',filename='images/tracker.svg')}}" alt="logo" /></a>
+                </div>
+                <div class="navbar-menu-wrapper flex-grow d-flex align-items-stretch">
+                    <button class="navbar-toggler navbar-toggler align-self-center" type="button"
+                        data-toggle="minimize">
+                        <span class="mdi mdi-menu"></span>
+                    </button>
+                    <ul class="navbar-nav w-100">
+                        <!--<li class="nav-item w-100">
+              <form class="nav-link mt-2 mt-md-0 d-none d-lg-flex" autocomplete="off" action='/results/' method="POST">
+                <div class="autocomplete" style="width:300px;">
+                  <input id="myInput" type="text" name='keyword' placeholder="Select">
+                  <button class="search-button" type="submit"><i class="mdi mdi-magnify"></i></button>
+                </div>
+              </form>
+            </li>-->
+                    </ul>
+                    <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button"
+                        data-toggle="offcanvas">
+                        <span class="mdi mdi-format-line-spacing"></span>
+                    </button>
+                </div>
+            </nav>
+            <!-- partial -->
+            <div class="main-panel">
+                <div class="content-wrapper">
+                    {% block content %}
+                    <div class="row">
+                        <div class="col-xl grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-9">
+                                            <div class="d-flex align-items-center align-self-start">
+                                                <h1 class="text-success mb-0">{{ stats_list[0] }}</h1>
+                                                <!--<p class="ml-2 mb-0 font-weight-medium">+3.5%</p>-->
+                                            </div>
+                                        </div>
+                                        <div class="col-3">
+                                            <div class="icon icon-box-success">
+                                                <span class="mdi mdi-account-plus icon-item"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-success font-weight-normal">Active</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-9">
+                                            <div class="d-flex align-items-center align-self-start">
+                                                <h1 class="text-info mb-0">{{ stats_list[1] }}</h1>
+                                                <!--<p class="ml-2 mb-0 font-weight-medium">+3.5%</p>-->
+                                            </div>
+                                        </div>
+                                        <div class="col-3">
+                                            <div class="icon icon-box-info ">
+                                                <span class="mdi mdi-hospital icon-item"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-info font-weight-normal">Recovered</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <!--<div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-9">
+                      <div class="d-flex align-items-center align-self-start">
+                        <h1 class="text-warning mb-0">17.34</h1>
+                      <p class="ml-2 mb-0 font-weight-medium">+11 new</p>
+                      </div>
+                    </div>
+                    <div class="col-3">
+                      <div class="icon icon-box-warning">
+                        <span class="mdi mdi-alert-outline icon-item"></span>
+                      </div>
+                    </div>
+                  </div>
+                  <h3 class="text-warning font-weight-normal">Confirmed</h3>
+                </div>
+              </div>
+            </div>-->
+                        <div class="col-xl grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-9">
+                                            <div class="d-flex align-items-center align-self-start">
+                                                <h1 class="text-danger mb-0">{{ stats_list[2] }}</h1>
+                                                <!--<p class="ml-2 mb-0 font-weight-medium">-2.4%</p>-->
+                                            </div>
+                                        </div>
+                                        <div class="col-3">
+                                            <div class="icon icon-box-danger">
+                                                <span class="mdi mdi-account-off icon-item"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-danger font-weight-normal">Deaths</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ">
+                        <div class="col-12 grid-margin">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h2 class="card-title">News Feed</h2>
+                                    {% for post in news %}
+                                    <h3>{{post['title']}}</h3>
+                                    <i>{{post['publishedAt']}}</i>
+                                    <p>{{post['description']}}</p>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-xl-4 grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title">Total Cases in India(State Wise)</h4>
+                                    <canvas id='cases_chart' style="height:250px"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-xl-4 grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title">Total Cured in India(State Wise)</h4>
+                                    <canvas id='cured_chart' style="height:250px"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-xl-4 grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title">Total Deaths in India(State Wise)</h4>
+                                    <canvas id='death_chart' style="height:250px"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title">Data Source</h4>
+                                    <a class="text-warning font-weight-normal" href="https://www.mohfw.gov.in/"
+                                        target="_blank">Ministry of Health and Family
+                                        Welfare</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <script>
+                        var ctx = document.getElementById('cases_chart');
+                        var myChart = new Chart(ctx, {
+                            type: 'pie',
+                            data: {
+                                labels: {{ state_list| tojson }},
+                        datasets: [{
+                            label: '# of Votes',
+                            data: {{ confirmed_list| tojson }},
+                            backgroundColor: {{ color| tojson }},
+                            borderWidth: 1
+                                }]
+                            },
+                        options: {
+                            legend: {
+                                display: false
+                            }
+                        }
+                        });
+                    </script>
+                    <script>
+                        var ctx = document.getElementById('cured_chart');
+                        var myChart = new Chart(ctx, {
+                            type: 'pie',
+                            data: {
+                                labels: {{ state_list| tojson }},
+                        datasets: [{
+                            label: '# of Votes',
+                            data: {{ cured_list| tojson }},
+                            backgroundColor: {{ color| tojson }},
+                            borderWidth: 1
+                                }]
+                            },
+                        options: {
+                            legend: {
+                                display: false
+                            }
+                        }
+                                
+                        });
+                    </script>
+                    <script>
+                        var ctx = document.getElementById('death_chart');
+                        var myChart = new Chart(ctx, {
+                            type: 'pie',
+                            data: {
+                                labels: {{ state_list| tojson }},
+                        datasets: [{
+                            label: '# of Votes',
+                            data: {{ death_list| tojson }},
+                            backgroundColor: {{ color| tojson }},
+                            borderWidth: 1
+                                }]
+                            },
+                        options: {
+                            legend: {
+                                display: false
+                            }
+                        }
+                                
+                        });
+                    </script>
+                    {% endblock %}
+                </div>
+
+                <!-- content-wrapper ends -->
+                <!-- partial:partials/_footer.html -->
+                <footer class="footer">
+                    <div class="d-sm-flex justify-content-center justify-content-sm-between">
+                        <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © 2020
+                            </a>. All
+                            rights reserved.</span>
+                        <span class="text-muted float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Stay
+                            Safe</i></span>
+                    </div>
+                </footer>
+                <!-- partial -->
+            </div>
+            <!-- main-panel ends -->
+        </div>
+        <!-- page-body-wrapper ends -->
+    </div>
+    <!-- container-scroller -->
+    <!-- plugins:js -->
+    <script src="{{url_for('static',filename='vendors/js/vendor.bundle.base.js')}}"></script>
+    <!-- endinject -->
+    <!-- inject:js -->
+    <script src="{{url_for('static',filename='js/off-canvas.js')}}"></script>
+    <script src="{{url_for('static',filename='js/hoverable-collapse.js')}}"></script>
+    <script src="{{url_for('static',filename='js/misc.js')}}"></script>
+    <!-- endinject -->
+    <!-- Custom js for this page -->
+    <script src="{{url_for('static',filename='js/dashboard.js')}}"></script>
+    <script src="{{url_for('static',filename='js/autocomplete.js')}}"></script>
+    <!-- End custom js for this page -->
+</body>
+
+</html>
